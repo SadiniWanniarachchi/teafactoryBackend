@@ -11,10 +11,11 @@ const PORT = process.env.PORT || 5000;
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI, {
-  
-}) 
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.error("MongoDB Connection Error:", err));
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.error("MongoDB Connection Error:", err));
 
 // Root Route
 app.get("/", (req, res) => {
@@ -25,15 +26,23 @@ app.get("/", (req, res) => {
 const employeeRoutes = require("./routes/employeeRoutes");
 const qualityRoutes = require("./routes/qualityRoutes");
 const supplierRoutes = require("./routes/supplierRoutes");
-const inventoryRoutes = require("./routes/inventoryRoutes"); // Import Inventory Routes
+const inventoryRoutes = require("./routes/inventoryRoutes");
 const salesRoutes = require("./routes/salesRoutes");
+const productRoutes = require('./routes/productRoutes');
 
 // Use Routes
 app.use("/api/Employee", employeeRoutes);
 app.use("/api/QualityChecks", qualityRoutes);
 app.use("/api/Supplier", supplierRoutes);
-app.use("/api/Inventory", inventoryRoutes); // Add Inventory API
+app.use("/api/Inventory", inventoryRoutes);
 app.use("/api/Sale", salesRoutes);
+app.use('/api/Product', productRoutes);
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Something went wrong!" });
+});
 
 // Start Server
 app.listen(PORT, () => {
