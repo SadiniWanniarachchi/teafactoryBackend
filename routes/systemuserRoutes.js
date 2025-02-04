@@ -14,8 +14,8 @@ router.get("/", async (req, res) => {
 
 // Add a new user
 router.post("/", async (req, res) => {
-    const { name, email, role, status } = req.body;
-    const user = new SystemUser({ name, email, role, status });
+    const { name, email, status } = req.body;
+    const user = new SystemUser({ name, email, status });
 
     try {
         const newUser = await user.save();
@@ -28,12 +28,12 @@ router.post("/", async (req, res) => {
 // Update a user
 router.put("/:id", async (req, res) => {
     const { id } = req.params;
-    const { name, email, role, status } = req.body;
+    const { name, email, status } = req.body;
 
     try {
         const updatedUser = await SystemUser.findByIdAndUpdate(
             id,
-            { name, email, role, status },
+            { name, email, status },
             { new: true }
         );
         res.json(updatedUser);
