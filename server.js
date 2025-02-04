@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
 const cookieParser = require('cookie-parser');
+const cloudinary = require('cloudinary').v2;
 
 // Middleware
 const corsOptions = {
@@ -25,6 +26,19 @@ mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log("MongoDB Connected"))
     .catch((err) => console.error("MongoDB Connection Error:", err));
 
+// check cloudinary connection
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+cloudinary.api.ping().then(() => {
+    console.log("Cloudinary connection successful");
+}).catch(error => {
+    console.error("Cloudinary connection failed:", error.message);
+});
+
 // Root Route
 app.get("/", (req, res) => {
     res.send("Tea Factory Management System Backend");
@@ -39,6 +53,7 @@ const salesRoutes = require("./routes/salesRoutes");
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes"); //(Login and Registration)
 const systemUserRoutes = require("./routes/systemUserRoutes"); //User Management Component in admin dashboard
+const uploadRoutes = require("./routes/uploadRoutes");
 
 // Use Routes
 app.use("/api/Employee", employeeRoutes);
@@ -49,6 +64,7 @@ app.use("/api/Sale", salesRoutes);
 app.use("/api/Product", productRoutes);
 app.use("/api/user", authRoutes);  // Add auth routes (Login and Registration)
 app.use("/api/SystemUser", systemUserRoutes); //User Management Component in admin dashboard
+app.use("/api/upload", uploadRoutes);
 
 // Global Error Handler
 app.use((error, req, res, next) => {
