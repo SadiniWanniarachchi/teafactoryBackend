@@ -1,9 +1,12 @@
 const User = require('../models/user');
+const { hashPassword, comparePassword } = require('../helpers/auth');
 
 const test = (req, res) => {
     res.json('test is working');
 };
 
+
+//Register End Point
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -30,8 +33,9 @@ const registerUser = async (req, res) => {
             return res.json({ error: "Email already exists" });
         }
 
+        const hashedPassword = await hashedPassword(password);
         // Create new user and save to the database
-        const user = await User.create({ name, email, password });
+        const user = await User.create({ name, email, password: hashPassword, });
 
         return res.json(user);
 
@@ -41,7 +45,43 @@ const registerUser = async (req, res) => {
     }
 };
 
+
+//Login End Point
+
+const loginUser = async (req, res) => {
+
+    try {
+        const { email, password } = req.body;
+
+        //Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.json({
+                error: "No User Found"
+            });
+
+        }
+        //Check if password matches
+        const match = await comparePassword(password, user.password)
+        if (match) {
+            res.json('Password Match');
+        }
+    } catch (error) {
+        console.log(error);
+
+
+    }
+
+
+    return res.status(400).json({ error: "Invalid request body" });
+}
+
+
+
+
+
 module.exports = {
     test,
-    registerUser
+    registerUser,
+    loginUser
 };

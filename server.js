@@ -34,6 +34,7 @@ const inventoryRoutes = require("./routes/inventoryRoutes");
 const salesRoutes = require("./routes/salesRoutes");
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes");
+const systemUserRoutes = require("./routes/systemUser");
 
 // Use Routes
 app.use("/api/Employee", employeeRoutes);
@@ -43,6 +44,7 @@ app.use("/api/Inventory", inventoryRoutes);
 app.use("/api/Sale", salesRoutes);
 app.use("/api/Product", productRoutes);
 app.use("/api/user", authRoutes);  // Add auth routes
+app.use("/api/SystemUser", systemUserRoutes);
 
 // Global Error Handler
 app.use((error, req, res, next) => {
