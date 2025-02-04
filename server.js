@@ -3,6 +3,7 @@ const dotenv = require('dotenv').config();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const app = express();
+const cookieParser = require('cookie-parser');
 
 // Middleware
 const corsOptions = {
@@ -13,6 +14,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser(cookieParser));
+app.use(express.urlencoded({ extended: false }));
+
 
 const PORT = process.env.PORT || 5000;
 
@@ -33,8 +37,8 @@ const supplierRoutes = require("./routes/supplierRoutes");
 const inventoryRoutes = require("./routes/inventoryRoutes");
 const salesRoutes = require("./routes/salesRoutes");
 const productRoutes = require("./routes/productRoutes");
-const authRoutes = require("./routes/authRoutes");
-const systemUserRoutes = require("./routes/systemUser");
+const authRoutes = require("./routes/authRoutes"); //(Login and Registration)
+const systemUserRoutes = require("./routes/systemUserRoutes"); //User Management Component in admin dashboard
 
 // Use Routes
 app.use("/api/Employee", employeeRoutes);
@@ -43,8 +47,8 @@ app.use("/api/Supplier", supplierRoutes);
 app.use("/api/Inventory", inventoryRoutes);
 app.use("/api/Sale", salesRoutes);
 app.use("/api/Product", productRoutes);
-app.use("/api/user", authRoutes);  // Add auth routes
-app.use("/api/SystemUser", systemUserRoutes);
+app.use("/api/user", authRoutes);  // Add auth routes (Login and Registration)
+app.use("/api/SystemUser", systemUserRoutes); //User Management Component in admin dashboard
 
 // Global Error Handler
 app.use((error, req, res, next) => {
