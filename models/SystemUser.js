@@ -10,10 +10,6 @@ const systemuserSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    role: {
-        type: String,
-        required: true,
-    },
     status: {
         type: String,
         enum: ["Active", "Inactive"],
