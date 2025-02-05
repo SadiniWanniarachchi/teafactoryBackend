@@ -1,13 +1,12 @@
 const User = require('../models/user');
-const { hashPassword, comparePassword } = require('../helpers/auth');
+const { hashPassword, comparePassword } = require('../helpers/auth').default;
 const jwt = require('jsonwebtoken');
 
 const test = (req, res) => {
     res.json('test is working');
 };
 
-
-//Register End Point
+// Register End Point
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -34,63 +33,56 @@ const registerUser = async (req, res) => {
             return res.json({ error: "Email already exists" });
         }
 
-        const hashedPassword = await hashedPassword(password);
-        // Create new user and save to the database
-        const user = await User.create({ name, email, password: hashPassword, });
+        // Corrected: Hash the password properly
+        const hashedPassword = await hashPassword(password);
+
+        // Corrected: Save user with the hashed password
+        const user = await User.create({ name, email, password: hashedPassword });
 
         return res.json(user);
-
     } catch (error) {
         console.log(error);
         res.status(500).json({ error: "Something went wrong" });
     }
 };
 
-
-//Login End Point
-
+// Login End Point
 const loginUser = async (req, res) => {
-
     try {
         const { email, password } = req.body;
 
-        //Check if user exists
+        // Check if user exists
         const user = await User.findOne({ email });
         if (!user) {
-            return res.json({
-                error: "No User Found"
-            });
-
+            return res.json({ error: "No User Found" });
         }
-        //Check if password matches
-        const match = await comparePassword(password, user.password)
+
+        // Check if password matches
+        const match = await comparePassword(password, user.password);
         if (match) {
-            jwt.sign({ email: user.email, id: user._id, name: user.name }, process.env.JWT_SECRET, {}, (err, token) => {
-                if (err) throw err;
-                res.cookie('token', token).json(user)
-
-            })
-        }
-
-        if (!match) {
-            res.json({
-                error: "Password does not match"
-            })
+            jwt.sign(
+                { email: user.email, id: user._id, name: user.name },
+                process.env.JWT_SECRET,
+                {},
+                (err, token) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({ error: "Token generation failed" });
+                    }
+                    res.cookie('token', token).json(user);
+                }
+            );
+        } else {
+            return res.json({ error: "Password does not match" });
         }
     } catch (error) {
         console.log(error);
-
-
+        return res.status(500).json({ error: "Something went wrong" });
     }
-
-
-    return res.status(400).json({ error: "Invalid request body" });
-}
-
-
+};
 
 module.exports = {
     test,
     registerUser,
-    loginUser
+    loginUser,
 };

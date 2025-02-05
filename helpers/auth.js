@@ -1,15 +1,15 @@
-const bcrypt = require('bcrypt');
+import { genSalt, hash as _hash, compare } from 'bcrypt';
 
 const hashPassword = (password) => {
     return new Promise((resolve, reject) => {
 
-        bcrypt.genSalt(12, (err, salt) => {
+        genSalt(12, (err, salt) => {
 
             if (err) {
 
                 reject(err)
             }
-            bcrypt.hash(password, salt, (err, hash) => {
+            _hash(password, salt, (err, hash) => {
 
                 if (err) {
 
@@ -23,9 +23,16 @@ const hashPassword = (password) => {
     })
 }
 
-const comparePassword = (password, hashed) => {
-    return bcrypt.compare(password, hashed)
-}
+const comparePassword = async (inputPassword, hashedPassword) => {
+    try {
+        const match = await compare(inputPassword, hashedPassword);
+        return match; // Returns true or false
+    } catch (error) {
+        console.error("Error comparing password:", error);
+        return false;
+    }
+};
 
-module.exports = { hashPassword, comparePassword }
+
+export default { hashPassword, comparePassword }
 
