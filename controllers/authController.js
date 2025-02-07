@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
 // Login End Point
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, role } = req.body;
 
         // Check if user exists
         const user = await User.findOne({ email });
@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
         const match = await comparePassword(password, user.password);
         if (match) {
             jwt.sign(
-                { email: user.email, id: user._id, name: user.name },
+                { email: user.email, id: user._id, name: user.name, role: user.role },
                 process.env.JWT_SECRET,
                 {},
                 (err, token) => {
@@ -79,7 +79,13 @@ const loginUser = async (req, res) => {
         console.log(error);
         return res.status(500).json({ error: "Something went wrong" });
     }
+
 };
+
+
+
+
+
 
 module.exports = {
     test,

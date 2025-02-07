@@ -12,6 +12,11 @@ const userSchema = new Schema({
     },
     password: String,
 
+    role: {
+        type: String,
+        enum: ["user", "admin"], // Restricts role values to "user" or "admin"
+        default: "user" // Default role is "user"
+    }
 
 
 })
