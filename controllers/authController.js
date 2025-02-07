@@ -82,8 +82,29 @@ const loginUser = async (req, res) => {
 
 };
 
+const getUserDetails = async (req, res) => {
+    try {
+        const { id } = req.params; // Get user ID from request params
+        const user = await User.findById(id); // Find user by ID
 
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
 
+        // Return user details (excluding password)
+        const userDetails = {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+        };
+
+        res.json(userDetails);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
 
 
 
@@ -91,4 +112,5 @@ module.exports = {
     test,
     registerUser,
     loginUser,
+    getUserDetails
 };
