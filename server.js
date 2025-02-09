@@ -54,6 +54,10 @@ const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes"); //(Login and Registration)
 const systemUserRoutes = require("./routes/systemUserRoutes"); //User Management Component in admin dashboard
 const uploadRoutes = require("./routes/uploadRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+
+
+
 
 // Use Routes
 app.use("/api/Employee", employeeRoutes);
@@ -65,6 +69,8 @@ app.use("/api/Product", productRoutes);
 app.use("/api/user", authRoutes);  // Add auth routes (Login and Registration)
 app.use("/api/SystemUser", systemUserRoutes); //User Management Component in admin dashboard
 app.use("/api/upload", uploadRoutes);
+app.use("/api/cart", cartRoutes);
+
 
 // Global Error Handler
 app.use((error, req, res, next) => {
