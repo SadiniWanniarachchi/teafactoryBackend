@@ -82,6 +82,42 @@ const loginUser = async (req, res) => {
 
 };
 
+// update user
+const updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, password, role } = req.body;
+
+        // Validate name (should contain only letters)
+        const nameRegex = /^[A-Za-z\s]+$/;
+        if (!name || !nameRegex.test(name)) {
+            return res.json({ error: "Name is required and should contain only letters" });
+        }
+
+        // Validate email (must contain '@')
+        if (!email || !email.includes('@')) {
+            return res.json({ error: "Enter a valid email containing '@'" });
+        }
+
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        user.name = name;
+        user.email = email;
+        user.password = password;
+        user.role = role;
+
+        await user.save();
+
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 const getUserDetails = async (req, res) => {
     try {
         const { id } = req.params; // Get user ID from request params
@@ -106,11 +142,32 @@ const getUserDetails = async (req, res) => {
     }
 };
 
+// delete user
+const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await User.findById(id);
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        await user.deleteOne();
+
+        res.json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
 
 
 module.exports = {
     test,
     registerUser,
+    updateUser,
     loginUser,
+    deleteUser,
     getUserDetails
 };
