@@ -1,38 +1,27 @@
-import { genSalt, hash as _hash, compare } from 'bcrypt';
+const bcrypt = require('bcryptjs');
 
 const hashPassword = (password) => {
     return new Promise((resolve, reject) => {
+        // Using 12 rounds for salt generation:
+        bcrypt.genSalt(12, (err, salt) => {
+            if (err) return reject(err);
 
-        genSalt(12, (err, salt) => {
-
-            if (err) {
-
-                reject(err)
-            }
-            _hash(password, salt, (err, hash) => {
-
-                if (err) {
-
-                    reject(err)
-                }
-                resolve(hash)
-            })
-
-
-        })
-    })
-}
+            bcrypt.hash(password, salt, (err, hash) => {
+                if (err) return reject(err);
+                resolve(hash);
+            });
+        });
+    });
+};
 
 const comparePassword = async (inputPassword, hashedPassword) => {
     try {
-        const match = await compare(inputPassword, hashedPassword);
-        return match; // Returns true or false
+        const match = await bcrypt.compare(inputPassword, hashedPassword);
+        return match; // true or false
     } catch (error) {
         console.error("Error comparing password:", error);
         return false;
     }
 };
 
-
-export default { hashPassword, comparePassword }
-
+module.exports = { hashPassword, comparePassword };
