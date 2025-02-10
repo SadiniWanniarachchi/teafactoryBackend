@@ -4,7 +4,7 @@ const CartItem = require("../models/CartItem");
 const router = express.Router();
 
 // Fetch all cart items
-router.get("/cart", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         const cartItems = await CartItem.find();
         res.json(cartItems);
@@ -15,7 +15,7 @@ router.get("/cart", async (req, res) => {
 
 
 // Add or update item in cart
-router.post("/cart", async (req, res) => {
+router.post("/", async (req, res) => {
     try {
         const { productId, name, image, price } = req.body;
 
@@ -42,7 +42,7 @@ router.post("/cart", async (req, res) => {
 
 
 // Update the quantity of a cart item
-router.put("/cart/:id", async (req, res) => {
+router.put("/:id", async (req, res) => {
     const { quantity } = req.body;
     try {
         const updatedItem = await CartItem.findByIdAndUpdate(
@@ -57,7 +57,7 @@ router.put("/cart/:id", async (req, res) => {
 });
 
 // Remove an item from the cart
-router.delete("/cart/:id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
     try {
         await CartItem.findByIdAndDelete(req.params.id);
         res.status(204).json({ message: "Item deleted" });
