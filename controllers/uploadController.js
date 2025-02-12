@@ -1,5 +1,7 @@
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
+require('dotenv').config();
+
 
 const uploadFile = async (req, res) => {
     try {
