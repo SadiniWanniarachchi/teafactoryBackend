@@ -52,7 +52,6 @@ const inventoryRoutes = require("./routes/inventoryRoutes");
 const salesRoutes = require("./routes/salesRoutes");
 const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes"); //(Login and Registration)
-const systemUserRoutes = require("./routes/systemUserRoutes"); //User Management Component in admin dashboard
 const uploadRoutes = require("./routes/uploadRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 
@@ -67,7 +66,6 @@ app.use("/api/Inventory", inventoryRoutes);
 app.use("/api/Sale", salesRoutes);
 app.use("/api/Product", productRoutes);
 app.use("/api/user", authRoutes);  // Add auth routes (Login and Registration)
-app.use("/api/SystemUser", systemUserRoutes); //User Management Component in admin dashboard
 app.use("/api/upload", uploadRoutes);
 app.use("/api/cart", cartRoutes);
 
