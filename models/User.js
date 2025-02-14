@@ -13,8 +13,7 @@ const userSchema = new Schema({
         enum: ["user", "admin"],
         default: "user"
     },
-    address: String,   // Added
-    phone: String      // Added
+
 });
 
 const UserModel = mongoose.model('user', userSchema);

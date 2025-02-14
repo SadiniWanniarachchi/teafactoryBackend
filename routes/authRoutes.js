@@ -8,7 +8,7 @@ router.get('/', test)
 router.post('/user', registerUser)
 router.post('/login', loginUser)
 router.get('/user/:id', getUserDetails);
-router.put('/:id', updateUser);
-router.delete('/:id', deleteUser);
+router.put('/user/:id', updateUser); // Update a user
+router.delete('/user/:id', deleteUser); // Delete a user
 
 module.exports = router 
