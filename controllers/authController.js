@@ -88,30 +88,46 @@ const updateUser = async (req, res) => {
         const { id } = req.params;
         const { name, email, password, role } = req.body;
 
-        // Validate name (should contain only letters)
-        const nameRegex = /^[A-Za-z\s]+$/;
-        if (!name || !nameRegex.test(name)) {
-            return res.json({ error: "Name is required and should contain only letters" });
-        }
-
         // Validate email (must contain '@')
-        if (!email || !email.includes('@')) {
+        if (email && !email.includes('@')) {
             return res.json({ error: "Enter a valid email containing '@'" });
         }
 
+        // Check if user exists
         const user = await User.findById(id);
+        console.log(user);
+
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }
 
-        user.name = name;
-        user.email = email;
-        user.password = password;
-        user.role = role;
+        // Hash password if provided
+        let hashedPassword = user.password;
+        if (password && password.length >= 6) {
+            hashedPassword = await hashPassword(password);
+        } else if (password) {
+            return res.json({ error: "Password should be at least 6 characters long" });
+        }
 
-        await user.save();
+        // Update user details
+        const updatedUser = await User.findByIdAndUpdate(
+            id,
+            { name, email, password: hashedPassword, role },
+            { new: true, runValidators: true }
+        ).select("-password"); // Exclude password from response
 
-        res.json(user);
+        res.json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find().select("-password"); // Exclude passwords from response
+        res.json(users);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Something went wrong" });
@@ -169,5 +185,6 @@ module.exports = {
     updateUser,
     loginUser,
     deleteUser,
-    getUserDetails
+    getUserDetails,
+    getAllUsers
 };
