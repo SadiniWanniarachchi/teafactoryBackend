@@ -57,7 +57,6 @@ const cartRoutes = require("./routes/cartRoutes");
 
 
 
-
 // Use Routes
 app.use("/api/Employee", employeeRoutes);
 app.use("/api/QualityChecks", qualityRoutes);
